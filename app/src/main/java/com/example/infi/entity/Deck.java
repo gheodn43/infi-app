@@ -2,40 +2,53 @@ package com.example.infi.entity;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import androidx.room.ColumnInfo;
+
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 @Entity(tableName = "deck")
 public class Deck {
 
     @PrimaryKey(autoGenerate = true)
-    private int deck_id;
+    private long deck_id;
+
+    @ColumnInfo(name = "deck_name")
     private String deck_name;
-    private String deck_path;
-    private String parent_deck_path;
+
+    @ColumnInfo(name = "new_count")
     private int new_count;
+
+    @ColumnInfo(name = "learning_count")
     private int learning_count;
+
+    @ColumnInfo(name = "review_count")
     private int review_count;
+
+    @ColumnInfo(name = "cooling_count")
     private int cooling_count;
+
+    @ColumnInfo(name = "last_update")
     private String last_update;
 
     // Constructor
-    public Deck(String deck_path) {
-        setDeck_path(deck_path);
+    public Deck(String deck_name) {
+        this.deck_name = deck_name;
         this.new_count = 0;
         this.learning_count = 0;
         this.review_count = 0;
         this.cooling_count = 0;
-        this.last_update = this.getCurrentTime();
+        this.last_update = getCurrentTime();
     }
 
     // Getters và Setters
-    public int getDeck_id() {
+    public long getDeck_id() {
         return deck_id;
     }
 
-    public void setDeck_id(int deck_id) {
+    public void setDeck_id(long deck_id) {
         this.deck_id = deck_id;
         setLast_update(this.getCurrentTime());
     }
@@ -46,25 +59,6 @@ public class Deck {
 
     public void setDeck_name(String deck_name) {
         this.deck_name = deck_name;
-        updateDeckPathAfterNameChange();
-        setLast_update(this.getCurrentTime());
-    }
-
-    public String getDeck_path() {
-        return deck_path;
-    }
-
-    public void setDeck_path(String deck_path) {
-        this.deck_path = deck_path;
-        updateDeckNameAndParentPathAfterPathChange();
-        setLast_update(this.getCurrentTime());
-    }
-
-    public String getParent_deck_path() {
-        return parent_deck_path;
-    }
-    public void setParent_deck_path(String parent_deck_path) {
-        this.parent_deck_path = parent_deck_path;
         setLast_update(this.getCurrentTime());
     }
 
@@ -107,23 +101,13 @@ public class Deck {
     public String getLast_update() {
         return last_update;
     }
+
     public void setLast_update(String last_update) {
         this.last_update = last_update;
     }
 
     private String getCurrentTime() {
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-    }
-    private void updateDeckPathAfterNameChange() {
-        if (this.parent_deck_path != null) {
-            this.deck_path = this.parent_deck_path + "::" + this.deck_name;
-        } else {
-            this.deck_path = this.deck_name;
-        }
-    }
-    private void updateDeckNameAndParentPathAfterPathChange() {
-        String[] paths = this.deck_path.split("::");
-        this.deck_name = paths[paths.length - 1];
-        this.parent_deck_path = paths.length > 1 ? this.deck_path.substring(0, this.deck_path.lastIndexOf("::")) : null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return LocalDateTime.now().format(formatter);
     }
 }

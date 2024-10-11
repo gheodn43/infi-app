@@ -23,9 +23,9 @@ public interface DeckDao {
     @Query("SELECT * FROM deck")
     List<Deck> getAllDecks();
 
-    @Query("SELECT * FROM deck WHERE deck_id = :deckId")
-    Deck getDeckById(int deckId);
+    @Query("SELECT * FROM deck WHERE deck_id = :deck_id")
+    Deck getDeckById(int deck_id);
 
-    @Query("SELECT * FROM deck WHERE deck_name LIKE :deckName")
-    List<Deck> findDecksByName(String deckName);
+    @Query("SELECT * FROM deck WHERE deck_name LIKE :deck_name")
+    List<Deck> findDecksByName(String deck_name);
 }

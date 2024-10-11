@@ -1,8 +1,8 @@
 package com.example.infi;
+
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
 import com.example.infi.entity.Deck;
 
 public class DeckTest {
@@ -11,57 +11,74 @@ public class DeckTest {
 
     @Before
     public void setUp() {
-        // Khởi tạo đối tượng Deck
-        deck = new Deck("deck1::deck2::deck3");
+        // Khởi tạo đối tượng Deck với tên deck_name
+        deck = new Deck("deck3");
     }
 
     @Test
     public void testConstructor() {
         // Kiểm tra các giá trị sau khi khởi tạo
         assertEquals("deck3", deck.getDeck_name());
-        assertEquals("deck1::deck2", deck.getParent_deck_path());
-        assertEquals("deck1::deck2::deck3", deck.getDeck_path());
+        assertEquals(0, deck.getNew_count());
+        assertEquals(0, deck.getLearning_count());
+        assertEquals(0, deck.getReview_count());
+        assertEquals(0, deck.getCooling_count());
+        assertNotNull(deck.getLast_update());
     }
 
     @Test
     public void testSetDeckName() {
-        // Thay đổi deck_name và kiểm tra deck_path
+        // Thay đổi deck_name và kiểm tra
         deck.setDeck_name("deck4");
         assertEquals("deck4", deck.getDeck_name());
-        assertEquals("deck1::deck2", deck.getParent_deck_path());
-        assertEquals("deck1::deck2::deck4", deck.getDeck_path());
+        assertNotNull(deck.getLast_update());
     }
 
     @Test
-    public void testSetDeckPath_withNewParent() {
-        // Thay đổi deck_path và kiểm tra deck_name và parent_deck_path
-        deck.setDeck_path("deck1::deck4::deck5");
-        assertEquals("deck5", deck.getDeck_name());
-        assertEquals("deck1::deck4", deck.getParent_deck_path());
+    public void testSetNewCount() {
+        // Thay đổi new_count và kiểm tra
+        deck.setNew_count(5);
+        assertEquals(5, deck.getNew_count());
+        assertNotNull(deck.getLast_update());
     }
 
     @Test
-    public void testSetDeckPath_withoutParent() {
-        // Thay đổi deck_path khi không có parent_deck_path
-        deck.setDeck_path("deck6");
-        assertEquals("deck6", deck.getDeck_name());
-        assertNull(deck.getParent_deck_path());
+    public void testSetLearningCount() {
+        // Thay đổi learning_count và kiểm tra
+        deck.setLearning_count(3);
+        assertEquals(3, deck.getLearning_count());
+        assertNotNull(deck.getLast_update());
     }
 
     @Test
-    public void testTimestampUpdateOnDeckPathChange() throws InterruptedException {
-        Deck deck = new Deck("deck1::deck2");
+    public void testSetReviewCount() {
+        // Thay đổi review_count và kiểm tra
+        deck.setReview_count(7);
+        assertEquals(7, deck.getReview_count());
+        assertNotNull(deck.getLast_update());
+    }
+
+    @Test
+    public void testSetCoolingCount() {
+        // Thay đổi cooling_count và kiểm tra
+        deck.setCooling_count(2);
+        assertEquals(2, deck.getCooling_count());
+        assertNotNull(deck.getLast_update());
+    }
+
+    @Test
+    public void testTimestampUpdateOnCountChange() throws InterruptedException {
+        // Lấy giá trị timestamp ban đầu
         String oldTimestamp = deck.getLast_update();
 
-        // Thêm khoảng trễ trước khi thay đổi
+        // Thêm khoảng trễ trước khi thay đổi giá trị
         Thread.sleep(1000);
 
-        deck.setDeck_path("deck1::deck3");
+        // Thay đổi một giá trị và kiểm tra timestamp mới
+        deck.setNew_count(5);
         String newTimestamp = deck.getLast_update();
 
         // Kiểm tra rằng timestamp đã thay đổi
-        assertNotEquals("Values should be different", oldTimestamp, newTimestamp);
+        assertNotEquals("Timestamp should be different", oldTimestamp, newTimestamp);
     }
-
-
 }
