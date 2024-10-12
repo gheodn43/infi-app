@@ -1,5 +1,6 @@
 package com.example.infi;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +31,10 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.deckRv);
         createNewDeckBtn = findViewById(R.id.createNewDeckBtn); // Khởi tạo button
-
+        createNewDeckBtn.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CreatDeck.class);
+            startActivity(intent);
+        });
         appDatabase = AppDatabase.getInstance(this);
 
         Executors.newSingleThreadExecutor().execute(new Runnable() {
@@ -57,10 +61,12 @@ public class MainActivity extends AppCompatActivity {
     private final DeckClickListener deckClickListener = new DeckClickListener() {
         @Override
         public void onClick(Deck deck) {
+            // click thì mở activity deck
         }
 
         @Override
         public void longPress(Deck deck, CardView cardView) {
+            // giữ lâu thì hiện ra nút xóa, đổi tên
         }
     };
 }

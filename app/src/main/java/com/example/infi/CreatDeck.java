@@ -55,14 +55,14 @@ public class CreatDeck extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(CreatDeck.this, "Deck created successfully!", Toast.LENGTH_SHORT).show();
-                                    deckNameInput.setText("");  // Clear input field
-//                                    finish();
+                                    deckNameInput.setText("");
+                                    finish(); // tạm thời thì tạo deck xong cho quay lại luôn
+                                    // đúng thì tạo xong chuyển tới màn hình thêm thẻ
                                 }
                             });
                         }
                     }).start();
                 } else {
-                    // Hiển thị Toast khi deck name trống
                     Toast.makeText(CreatDeck.this, "Please enter a deck name", Toast.LENGTH_SHORT).show();
                 }
             }

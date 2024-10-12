@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/secondary"/>
+        android:background="@drawable/border_bottom" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,19 +31,20 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:text="@string/my_decks"
                 android:textColor="@android:color/white"
                 android:textSize="18sp"
+                android:layout_marginStart="0dp"
                 android:gravity="center_vertical"/>
 
             <Button
                 android:id="@+id/createNewDeckBtn"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="0.5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="@drawable/rounded_corners_btn"
                 android:paddingHorizontal="30dp"
+                android:paddingVertical="10dp"
                 android:text="@string/create_new_btn"
                 android:textSize="18sp" />
         </LinearLayout>
