@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">infi</string>
+    <string name="create_new_btn">Create New</string>
+    <string name="my_decks">My Decks</string>
 </resources>

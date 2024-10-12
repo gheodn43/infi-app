@@ -12,7 +12,6 @@ import java.math.BigDecimal;
         primaryKeys = {"deck_id", "card_id"}
 )
 public class AvgCompTime {
-
     private long deck_id;       // Khóa ngoại liên kết với bảng Deck
     private long card_id;       // Khóa ngoại liên kết với bảng Card
     private int learning_count;    // Số lần học

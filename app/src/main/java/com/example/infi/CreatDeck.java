@@ -41,7 +41,6 @@ public class CreatDeck extends AppCompatActivity {
         AppDatabase db = AppDatabase.getInstance(this);
         deckDao = db.deckDao();
 
-        // Xử lý sự kiện bấm nút "Create"
         createDeckButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,19 +51,22 @@ public class CreatDeck extends AppCompatActivity {
                         @Override
                         public void run() {
                             deckDao.insertDeck(newDeck);
-                            runOnUiThread(new Runnable() {  @Override
-                            public void run() {
-                                finish();
-                            }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(CreatDeck.this, "Deck created successfully!", Toast.LENGTH_SHORT).show();
+                                    deckNameInput.setText("");  // Clear input field
+//                                    finish();
+                                }
                             });
                         }
                     }).start();
-                    Toast.makeText(CreatDeck.this, "Deck created successfully!", Toast.LENGTH_SHORT).show();
-                    deckNameInput.setText("");
                 } else {
+                    // Hiển thị Toast khi deck name trống
                     Toast.makeText(CreatDeck.this, "Please enter a deck name", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
     }
 }

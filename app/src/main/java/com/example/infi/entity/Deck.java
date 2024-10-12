@@ -32,7 +32,6 @@ public class Deck {
 
     @ColumnInfo(name = "last_update")
     private String last_update;
-
     // Constructor
     public Deck(String deck_name) {
         this.deck_name = deck_name;
