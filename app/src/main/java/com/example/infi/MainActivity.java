@@ -61,9 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private final DeckClickListener deckClickListener = new DeckClickListener() {
         @Override
         public void onClick(Deck deck) {
-            // click thì mở activity deck
-        }
 
+        }
         @Override
         public void longPress(Deck deck, CardView cardView) {
             // giữ lâu thì hiện ra nút xóa, đổi tên

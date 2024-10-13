@@ -7,5 +7,11 @@
     <string name="new_carrd">New Card</string>
     <string name="learning_card">Learning Card</string>
     <string name="review_card">Review Card</string>
+    <string name="exit_study_btn">Exit</string>
+    <string name="show_answer_btn">Show Answer</string>
+    <string name="again_level_btn">Again</string>
+    <string name="hard_level_btn">Hard</string>
+    <string name="good_level_btn">Good</string>
+    <string name="easy_level_btn">Easy</string>
 
 </resources>
