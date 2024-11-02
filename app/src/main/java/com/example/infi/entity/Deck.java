@@ -2,7 +2,7 @@ package com.example.infi.entity;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.ColumnInfo;
+    import androidx.room.ColumnInfo;
 
 
 import java.time.LocalDateTime;
@@ -41,6 +41,7 @@ public class Deck {
         this.cooling_count = 0;
         this.last_update = getCurrentTime();
     }
+    public Deck(){};
 
     // Getters và Setters
     public long getDeck_id() {

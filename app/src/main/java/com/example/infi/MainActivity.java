@@ -61,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
     private final DeckClickListener deckClickListener = new DeckClickListener() {
         @Override
         public void onClick(Deck deck) {
-
+            Intent intent = new Intent(MainActivity.this, DeckDetail.class);
+            intent.putExtra("deck_id", deck.getDeck_id());
+            startActivity(intent);
         }
         @Override
         public void longPress(Deck deck, CardView cardView) {

@@ -4,8 +4,6 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
-import androidx.room.Ignore;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -59,8 +57,11 @@ public class Card {
     @ColumnInfo(name = "overdue_at")
     private String overdue_at;
 
-    @Ignore
-    private AvgCompTime avgCompTime;
+    @ColumnInfo(name = "learning_count")
+    private int learning_count;
+
+    @ColumnInfo(name = "total_time")
+    private BigDecimal total_time;
 
     public Card(long deck_id, String card_front, String card_back) {
         this.deck_id = deck_id;
@@ -73,7 +74,9 @@ public class Card {
         this.hard = "5m";
         this.good = "10m";
         this.easy = "1d";
-        this.overdue_at = null;
+        this.overdue_at = "";
+        this.learning_count = 0;
+        this.total_time = new BigDecimal("0.00");
     }
 
     public long getCard_id() {
@@ -165,16 +168,25 @@ public class Card {
     }
 
     public String getOverdue_at() {
-        return overdue_at;
+        return overdue_at != null ? overdue_at : "";
     }
 
-    public void setAvgCompTime(AvgCompTime avgCompTime) {
-        this.avgCompTime = avgCompTime;
+    public int getLearning_count() {
+        return learning_count;
     }
 
-    public AvgCompTime getAvgCompTime() {
-        return avgCompTime;
+    public void setLearning_count(int learning_count) {
+        this.learning_count = learning_count;
     }
+
+    public BigDecimal getTotal_time() {
+        return total_time;
+    }
+
+    public void setTotal_time(BigDecimal total_time) {
+        this.total_time = total_time;
+    }
+
 
     private String getCurrentTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -182,7 +194,11 @@ public class Card {
     }
 
     // Phương thức thiết lập overdue_at
-    public void setOverdue_at(String delay) {
+    public void setOverdue_at(String overdue_at){
+        this.overdue_at = overdue_at;
+    }
+
+    public String overdueAt(String delay) {
         LocalDateTime now = LocalDateTime.now();
         int timeValue = Integer.parseInt(delay.substring(0, delay.length() - 1));
         char timeUnit = delay.charAt(delay.length() - 1);
@@ -203,9 +219,8 @@ public class Card {
             default:
                 throw new IllegalArgumentException("Invalid time unit");
         }
-
-        this.overdue_at = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault()));
         this.card_status = "COOLING_CARD";
+        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault()));
     }
 
     private void changeStepTo1() {
@@ -214,25 +229,27 @@ public class Card {
         setGood("1d");
         setEasy("3d");
     }
-    private void changeStatusToLearning(){
+    public void changeStatusToLearning(){
         setCard_status("LEARNING_CARD");
     }
-    private void changeStatusToCooling(){
+    public void changeStatusToCooling(){
         setCard_status("COOLING_CARD");
     }
-    private void changeStatusToReview(){
+    public void changeStatusToReview(){
         setCard_status("REVIEW_CARD");
     }
     private void updateAvgCompTime(BigDecimal timeToComp) {
-        if (avgCompTime != null) {
-            avgCompTime.update_avg_comp_time(timeToComp);
-        } else {
-            throw new IllegalStateException("AvgCompTime is not initialized.");
+        if (timeToComp.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Time to complete cannot be negative.");
         }
+        BigDecimal maxTimeToAdd = new BigDecimal("15.00");
+        BigDecimal timeToAdd = timeToComp.min(maxTimeToAdd);
+        setLearning_count(getLearning_count() + 1);
+        setTotal_time(getTotal_time().add(timeToAdd));
     }
     public int calculateDifficulty(BigDecimal timeToComp) {
-        int learning_count_before = avgCompTime.getLearning_count();
-        BigDecimal total_time_before = avgCompTime.getTotal_time();
+        int learning_count_before = getLearning_count();
+        BigDecimal total_time_before = getTotal_time();
 
         BigDecimal avg_time_before = (learning_count_before > 0)
                 ? total_time_before.divide(BigDecimal.valueOf(learning_count_before), 2, RoundingMode.HALF_UP)
@@ -240,8 +257,8 @@ public class Card {
 
         this.updateAvgCompTime(timeToComp);
 
-        int learning_count_after = avgCompTime.getLearning_count();
-        BigDecimal total_time_after = avgCompTime.getTotal_time();
+        int learning_count_after = getLearning_count();
+        BigDecimal total_time_after = getTotal_time();
 
         BigDecimal avg_time_after = (learning_count_after > 0)
                 ? total_time_after.divide(BigDecimal.valueOf(learning_count_after), 2, RoundingMode.HALF_UP)
@@ -303,13 +320,13 @@ public class Card {
 
     private void handleHard() {
         if (getCard_step() == 2) {
-            setOverdue_at(getHard());
+            setOverdue_at(overdueAt(getHard()));
         }
     }
 
     private void handleGood() {
         final int JUMPING_GOOD = 2;
-        setOverdue_at(getGood());
+        setOverdue_at(overdueAt(getGood()));
         if (getCard_step() == 1) {
             setAgain("10m");
             setAgain(this.estNextDelay("1d", JUMPING_GOOD));
@@ -324,7 +341,7 @@ public class Card {
 
     private void handleEasy() {
         final int JUMPING_EASY = 3;
-        setOverdue_at(getEasy());
+        setOverdue_at(overdueAt(getEasy()));
         if (getCard_step() == 0) {
             this.changeStepTo1();
             setCard_step(1);
