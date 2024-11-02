@@ -29,7 +29,7 @@ public class DeckDetail extends AppCompatActivity {
     Button studyBtn, addCardBtn;
     EditText frontOfCard, backOfCard, editText;
     TextView deskName, newCount, learningCount, reviewCount;
-    ImageView editIcon, submitIcon;
+    ImageView editIcon, submitIcon, backButton;
 
     private CardDao cardDao;
     private DeckDao deckDao;
@@ -60,7 +60,8 @@ public class DeckDetail extends AppCompatActivity {
         editIcon = findViewById(R.id.btn_edit_deck_name);
         submitIcon = findViewById(R.id.btn_submit_deck_name);
         editText = findViewById(R.id.text_edit_deck_name);
-
+        backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(view -> finish());
         AppDatabase db = AppDatabase.getInstance(this);
         cardDao = db.cardDao();
         deckDao = db.deckDao();
