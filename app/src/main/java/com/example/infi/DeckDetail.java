@@ -2,8 +2,10 @@ package com.example.infi;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,8 +27,9 @@ import java.util.Locale;
 
 public class DeckDetail extends AppCompatActivity {
     Button studyBtn, addCardBtn;
-    EditText frontOfCard, backOfCard;
-    TextView newCount, learningCount, reviewCount;
+    EditText frontOfCard, backOfCard, editText;
+    TextView deskName, newCount, learningCount, reviewCount;
+    ImageView editIcon, submitIcon;
 
     private CardDao cardDao;
     private DeckDao deckDao;
@@ -45,6 +48,7 @@ public class DeckDetail extends AppCompatActivity {
         });
 
         // Khởi tạo các biến với giá trị từ findViewById
+        deskName = findViewById(R.id.text_view_deck_name);
         studyBtn = findViewById(R.id.study_btn);
         addCardBtn = findViewById(R.id.create_card_button);
         frontOfCard = findViewById(R.id.card_front_input);
@@ -52,6 +56,10 @@ public class DeckDetail extends AppCompatActivity {
         newCount = findViewById(R.id.txt_new_card_count);
         learningCount = findViewById(R.id.txt_learning_card_count);
         reviewCount = findViewById(R.id.txt_review_card_count);
+
+        editIcon = findViewById(R.id.btn_edit_deck_name);
+        submitIcon = findViewById(R.id.btn_submit_deck_name);
+        editText = findViewById(R.id.text_edit_deck_name);
 
         AppDatabase db = AppDatabase.getInstance(this);
         cardDao = db.cardDao();
@@ -64,6 +72,7 @@ public class DeckDetail extends AppCompatActivity {
             deck = deckDao.getDeckById(deckId);
             runOnUiThread(() -> {
                 if (deck != null) {
+                    deskName.setText(String.valueOf(deck.getDeck_name()));
                     newCount.setText(String.valueOf(deck.getNew_count()));
                     learningCount.setText(String.valueOf(deck.getLearning_count()));
                     reviewCount.setText(String.valueOf(deck.getReview_count()));
@@ -108,7 +117,56 @@ public class DeckDetail extends AppCompatActivity {
                 Toast.makeText(DeckDetail.this, "Please fill in both front and back of card.", Toast.LENGTH_SHORT).show();
             }
         });
+
+        editIcon.setOnClickListener(view -> {
+            // Ẩn TextView và nút edit
+            deskName.setVisibility(View.GONE);
+            editIcon.setVisibility(View.GONE);
+
+            // Hiển thị EditText và nút submit
+            editText.setVisibility(View.VISIBLE);
+            submitIcon.setVisibility(View.VISIBLE);
+
+            // Đặt tên hiện tại của deck vào EditText để có thể chỉnh sửa
+            editText.setText(deskName.getText().toString());
+        });
+
+        submitIcon.setOnClickListener(view -> {
+            // Lấy tên mới từ EditText
+            String newDeckName = editText.getText().toString().trim();
+
+            // Kiểm tra tên mới không rỗng
+            if (!newDeckName.isEmpty()) {
+                new Thread(() -> {
+                    if (deck != null) {
+                        deck.setDeck_name(newDeckName);
+                        deckDao.updateDeck(deck);
+
+                        runOnUiThread(() -> {
+                            // Cập nhật lại TextView với tên mới
+                            deskName.setText(newDeckName);
+
+                            // Ẩn EditText và nút submit
+                            editText.setVisibility(View.GONE);
+                            submitIcon.setVisibility(View.GONE);
+
+                            // Hiển thị lại TextView và nút edit
+                            deskName.setVisibility(View.VISIBLE);
+                            editIcon.setVisibility(View.VISIBLE);
+
+                            Toast.makeText(DeckDetail.this, "Deck name updated successfully!", Toast.LENGTH_SHORT).show();
+                        });
+                    } else {
+                        runOnUiThread(() -> Toast.makeText(DeckDetail.this, "Deck not found!", Toast.LENGTH_SHORT).show());
+                    }
+                }).start();
+            } else {
+                Toast.makeText(DeckDetail.this, "Please enter a deck name.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
+
 
     private String getCurrentTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
