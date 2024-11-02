@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
-    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".DeckDetail">
 
     <RelativeLayout
@@ -16,28 +16,55 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_marginTop="56dp"
+        android:orientation="vertical"
         android:paddingHorizontal="20dp"
         android:paddingVertical="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:weightSum="1">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_view_deck_name"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="@string/deck_name"
                 android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:layout_marginStart="0dp"
-                android:gravity="center_vertical"/>
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/text_edit_deck_name"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="@string/deck_name"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <ImageView
+                android:id="@+id/btn_edit_deck_name"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/baseline_edit_24" />
+
+            <ImageView
+                android:id="@+id/btn_submit_deck_name"
+                android:visibility="gone"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/baseline_check_24" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
 
             <Button
                 android:id="@+id/study_btn"
@@ -50,87 +77,97 @@
                 android:textSize="18sp" />
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginTop="20dp"
-            android:paddingVertical="20dp"
-            android:background="@color/secondary">
+            android:background="@color/secondary"
+            android:orientation="vertical"
+            android:paddingVertical="20dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="5dp"
+                android:orientation="horizontal"
                 android:paddingHorizontal="50dp"
-                android:orientation="horizontal">
+                android:paddingVertical="5dp">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="0dp"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="@string/new_carrd"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:layout_marginStart="0dp"
-                    android:gravity="center_vertical"/>
+                    android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/txt_new_card_count"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="0"
+                    android:textAlignment="center"
                     android:textColor="@color/green"
-                    android:textSize="16sp"
-                    android:textAlignment="center"/>
+                    android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="5dp"
+                android:orientation="horizontal"
                 android:paddingHorizontal="50dp"
-                android:orientation="horizontal">
+                android:paddingVertical="5dp">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="0dp"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="@string/learning_card"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:layout_marginStart="0dp"
-                    android:gravity="center_vertical"/>
+                    android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/txt_learning_card_count"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="0"
+                    android:textAlignment="center"
                     android:textColor="@color/orange"
-                    android:textSize="16sp"
-                    android:textAlignment="center"/>
+                    android:textSize="16sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingVertical="5dp"
+                android:orientation="horizontal"
                 android:paddingHorizontal="50dp"
-                android:orientation="horizontal">
+                android:paddingVertical="5dp">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:layout_marginStart="0dp"
                     android:layout_weight="1"
+                    android:gravity="center_vertical"
                     android:text="@string/review_card"
                     android:textColor="@android:color/white"
-                    android:textSize="16sp"
-                    android:layout_marginStart="0dp"
-                    android:gravity="center_vertical"/>
+                    android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/txt_review_card_count"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="0"
+                    android:textAlignment="center"
                     android:textColor="@color/blue"
-                    android:textSize="16sp"
-                    android:textAlignment="center"/>
+                    android:textSize="16sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -139,58 +176,66 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingVertical="20dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_vertical"
                 android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
                 android:weightSum="1">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:text="Front"
                     android:textColor="@color/primary"
-                    android:textSize="14sp"
-                    android:gravity="center_vertical"/>
+                    android:textSize="14sp" />
+
                 <EditText
                     android:id="@+id/card_front_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter content for front"
-                    android:textSize="14sp"
-                    android:textColorHint="@color/primary"
-                    android:paddingVertical="15dp"
-                    android:paddingHorizontal="10dp"
-                    android:inputType="text"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/custom_input"/>
+                    android:background="@drawable/custom_input"
+                    android:hint="Enter content for front"
+                    android:inputType="text"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="15dp"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/primary"
+                    android:textSize="14sp" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center_vertical"
+                android:orientation="vertical"
                 android:weightSum="1">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:text="Back"
                     android:textColor="@color/primary"
-                    android:textSize="14sp"
-                    android:gravity="center_vertical"/>
+                    android:textSize="14sp" />
+
                 <EditText
                     android:id="@+id/card_back_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter conten for back"
-                    android:textSize="14sp"
-                    android:textColorHint="@color/primary"
-                    android:paddingVertical="15dp"
-                    android:paddingHorizontal="10dp"
-                    android:inputType="text"
                     android:layout_marginTop="5dp"
-                    android:background="@drawable/custom_input"/>
+                    android:background="@drawable/custom_input"
+                    android:hint="Enter conten for back"
+                    android:inputType="text"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="15dp"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/primary"
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -198,8 +243,7 @@
             android:id="@+id/create_card_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Add Card"
-            />
+            android:text="Add Card" />
     </LinearLayout>
 
 </RelativeLayout>
