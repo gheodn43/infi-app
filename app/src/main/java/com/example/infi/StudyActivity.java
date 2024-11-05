@@ -5,7 +5,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.util.Log;
@@ -14,12 +16,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.os.Handler;
+import android.widget.Toast;
 
 
 import com.example.infi.dao.CardDao;
 import com.example.infi.dao.DeckDao;
 import com.example.infi.database.AppDatabase;
 import com.example.infi.entity.Card;
+import com.example.infi.entity.Deck;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -31,7 +35,7 @@ public class StudyActivity extends AppCompatActivity {
 
     private Button exitBtn, showAnswerBtn, againBtn, hardBtn, goodBtn, easyBtn;
     private LinearLayout levelBtns;
-    private TextView frontContent, backContent, againTime, hardTime, goodTime, easyTime, timerText;
+    private TextView deckName, frontContent, backContent, againTime, hardTime, goodTime, easyTime, timerText;
     private boolean isAnswerShown = false;
     private CardManager cardManager;
     private CardDao cardDao;
@@ -43,6 +47,8 @@ public class StudyActivity extends AppCompatActivity {
     private long startTime, deckId;
     private String stoppedTime;
     private Intent intent;
+
+    private Deck deck;
 
 
     @Override
@@ -59,9 +65,20 @@ public class StudyActivity extends AppCompatActivity {
         AppDatabase db = AppDatabase.getInstance(this);
         cardDao = db.cardDao();
         deckDao = db.deckDao();
+
+        new Thread(() -> {
+            deck = deckDao.getDeckById(deckId);
+            runOnUiThread(() -> {
+                if (deck != null) {
+                    deckName.setText(String.valueOf(deck.getDeck_name()));
+                } else {
+                    Toast.makeText(StudyActivity.this, "Deck not found!", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).start();
+
         setupButtonClickListeners();
         loadCards();
-
 
 
         levelBtns.setVisibility(View.GONE);
@@ -87,6 +104,7 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
+        deckName = findViewById(R.id.text_view_deck_name);
         exitBtn = findViewById(R.id.btn_exit_study);
         showAnswerBtn = findViewById(R.id.show_answer_btn);
         levelBtns = findViewById(R.id.layout_level_btns);
@@ -159,7 +177,7 @@ public class StudyActivity extends AppCompatActivity {
 
     private void handleExitStudy() {
         List<Card> cardsInHeap = cardManager.getHeap();
-        int count = cardsInHeap.size()+1;
+        int count = cardsInHeap.size() + 1;
         if (card != null) {
             new AlertDialog.Builder(this)
                     .setTitle("Xác nhận")
@@ -185,10 +203,10 @@ public class StudyActivity extends AppCompatActivity {
         BigDecimal timeToComp = convertTimeToBigDecimal(stoppedTime);
         int newDiff = card.calculateDifficulty(timeToComp);
         card.setCard_diff(newDiff);
-        switch (card.getCard_step()){
+        switch (card.getCard_step()) {
             case 0:
-                if(level.equals("again") || level.equals("hard") || level.equals("good")){
-                    if(!card.getCard_status().equals("LEARNING_CARD")){
+                if (level.equals("again") || level.equals("hard") || level.equals("good")) {
+                    if (!card.getCard_status().equals("LEARNING_CARD")) {
                         card.changeStatusToLearning();
                         new Thread(() -> deckDao.moveNewToLearning(deckId, getCurrentTime())).start();
                     }
@@ -196,10 +214,10 @@ public class StudyActivity extends AppCompatActivity {
                     int delayValue = Integer.parseInt(delay.substring(0, delay.length() - 1));
                     cardManager.selectCardTime(card, delayValue);
                     displayNextCard();
-                }else {
-                    if(card.getCard_status().equals("LEARNING_CARD")){
+                } else {
+                    if (card.getCard_status().equals("LEARNING_CARD")) {
                         new Thread(() -> deckDao.moveLearningToCooling(deckId, getCurrentTime())).start();
-                    }else{
+                    } else {
                         new Thread(() -> deckDao.moveNewToCooling(deckId, getCurrentTime())).start();
                     }
                     card.ms5(level);
@@ -209,18 +227,18 @@ public class StudyActivity extends AppCompatActivity {
                 }
                 break;
             case 1:
-                if(level.equals("again") || level.equals("hard")){
-                    if(!card.getCard_status().equals("LEARNING_CARD")){
+                if (level.equals("again") || level.equals("hard")) {
+                    if (!card.getCard_status().equals("LEARNING_CARD")) {
                         card.changeStatusToLearning();
                         new Thread(() -> deckDao.moveReviewToLearning(deckId, getCurrentTime())).start();
                     }
                     int delayValue = Integer.parseInt(delay.substring(0, delay.length() - 1));
                     cardManager.selectCardTime(card, delayValue);
                     displayNextCard();
-                }else{
-                    if(card.getCard_status().equals("LEARNING_CARD")){
+                } else {
+                    if (card.getCard_status().equals("LEARNING_CARD")) {
                         new Thread(() -> deckDao.moveLearningToCooling(deckId, getCurrentTime())).start();
-                    }else{
+                    } else {
                         new Thread(() -> deckDao.moveReviewToCooling(deckId, getCurrentTime())).start();
                     }
                     card.ms5(level);
@@ -230,16 +248,16 @@ public class StudyActivity extends AppCompatActivity {
                 }
                 break;
             case 2:
-                if(level.equals("again")){
+                if (level.equals("again")) {
                     card.ms5(level);
-                    if(!card.getCard_status().equals("LEARNING_CARD")){
+                    if (!card.getCard_status().equals("LEARNING_CARD")) {
                         new Thread(() -> deckDao.moveReviewToLearning(deckId, getCurrentTime())).start();
                     }
                     int delayValue = Integer.parseInt(delay.substring(0, delay.length() - 1));
                     cardManager.selectCardTime(card, delayValue);
                     displayNextCard();
-                } else{
-                    if(card.getCard_status().equals("LEARNING_CARD")){
+                } else {
+                    if (card.getCard_status().equals("LEARNING_CARD")) {
                         new Thread(() -> deckDao.moveLearningToCooling(deckId, getCurrentTime())).start();
                     } else {
                         new Thread(() -> deckDao.moveReviewToCooling(deckId, getCurrentTime())).start();
@@ -292,11 +310,13 @@ public class StudyActivity extends AppCompatActivity {
         stopTimer();
         timerText.setText("00:00.00");
     }
+
     public BigDecimal convertTimeToBigDecimal(String time) {
         String[] parts = time.split(":");
         String secondsAndMillis = parts[1];
         return new BigDecimal(secondsAndMillis);
     }
+
     private void flipCard() {
         AnimatorSet frontAnim = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.front_animator);
         AnimatorSet backAnim = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.back_animator);
@@ -327,6 +347,7 @@ public class StudyActivity extends AppCompatActivity {
             backAnim.start();
         }
     }
+
     private String getCurrentTime() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return LocalDateTime.now().format(formatter);
